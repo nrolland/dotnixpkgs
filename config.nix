@@ -38,6 +38,14 @@ rec {
 
     hsEmpty = pkgs.haskell-ng.packages.ghc784.ghcWithPackages (p: with p; []);
 
+    devEnv = pkgs.myEnvFun {
+       name = "devEnv";
+       buildInputs = with pkgs; [
+        flow
+        nix-repl
+     ];
+};
+
     
     withHoogle = haskellEnv: with pkgs.haskellngPackages;
      import <nixpkgs/pkgs/development/libraries/haskell/hoogle/local.nix> {
