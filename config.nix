@@ -47,7 +47,16 @@ rec {
       packages = haskellEnv.paths;
     };
 
+    myPythonEnv = pkgs.myEnvFun {
+        name = "mypython";
+        buildInputs = [
+          pkgs.python27
+          pkgs.python27Packages.scikitlearn
+        ];
+    };
+
   };
+
 
 
   allowBroken = true;
@@ -82,6 +91,7 @@ rec {
   MemoTrie
   MissingH
   QuickCheck
+  accelerate
   adjunctions
   aeson
   async
