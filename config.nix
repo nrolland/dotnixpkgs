@@ -10,10 +10,9 @@ rec {
         #mkDerivation = expr: super.mkDerivation (expr // {
         #  enableLibraryProfiling = true; });
         # Private package
-          system-fileio = self.callPackage ../clones/haskell-filesystem/system-fileio/default.nix {};
+          system-fileio   = self.callPackage  ../clones/haskell-filesystem/system-fileio/default.nix {};
           };
-    };
-    
+      };
     #defines a new attribute called hsEnv that you can subsequently
     #install into an environment by saying
     # $ nix-env -iA nixpkgs.hsEnv  #nixpkgs se refere a une expression ou un repertoire
@@ -22,11 +21,36 @@ rec {
             (haskellDev p) 
             ++(myPackages p) 
             # add more packages here
-            );
-
-     
-            
+         );
     hsEnvHoogle = withHoogle hsEnv;
+    hsEmpty = pkgs.haskell-ng.packages.ghc784.ghcWithPackages (p: with p; []);
+
+    haskellPackages = pkgs.haskellPackages.override {
+        extension = self: super: {
+        cmdtheline = self.callPackage  ../hask/purescript-nix/cmdtheline.nix {};
+        purescript = self.callPackage  ../hask/purescript-nix/purescript.nix {};
+       };
+      };
+    devWeb = let haskellPackages = pkgs.haskellPackages.override {
+              extension = self: super: {
+               cmdtheline = self.callPackage ../hask/purescript-nix/cmdtheline.nix {};
+               purescript = self.callPackage  ../hask/purescript-nix/purescript.nix {};
+              };
+              };
+             in
+             #a voir.. comment juste installer les binaires dans l'environnement global ?
+             #self.stdenv.mkDerivation {
+             pkgs.myEnvFun {
+               name = "devWeb";
+               buildInputs = with pkgs; [
+                              flow
+                              nix-repl
+                              haskellPackages.purescript
+                              nodePackages.bower
+                              nodePackages.grunt-cli
+                              git
+                            ];
+       };
     agdaEnv = pkgs.myEnvFun {
             name =  "agda";
             buildInputs = [
@@ -35,41 +59,26 @@ rec {
             #haskellPackages.AgdaPrelude
             ];
     };
-
-    hsEmpty = pkgs.haskell-ng.packages.ghc784.ghcWithPackages (p: with p; []);
-
-    devEnv = pkgs.myEnvFun {
-       name = "devEnv";
-       buildInputs = with pkgs; [
-        flow
-        nix-repl
-     ];
-};
-
-    
+    #installing this builds the docs for the installed packages
     withHoogle = haskellEnv: with pkgs.haskellngPackages;
      import <nixpkgs/pkgs/development/libraries/haskell/hoogle/local.nix> {
       stdenv = pkgs.stdenv;
       inherit hoogle rehoo;
       ghc = pkgs.haskell-ng.compiler.ghc;
       packages = haskellEnv.paths;
-    };
-
+      };
+    #does not work openblas-0.2.14 : unsupported system: x86_64-darwin
     myPythonEnv = pkgs.myEnvFun {
-        name = "mypython";
+        name = "myPythonEnv";
         buildInputs = [
           pkgs.python27
           pkgs.python27Packages.scikitlearn
         ];
-    };
-
-  };
-
-
+      };
+  };#end packageOverrides
 
   allowBroken = true;
   allowUnfree = true;
-
   
   haskellDev = p: with p; [
      ghc
@@ -77,7 +86,7 @@ rec {
      hdevtools
      hlint
      ihaskell
-     #cabal2nix
+     cabal2nix
      aeson base bytestring heist lens MonadCatchIO-transformers mtl
      postgresql-simple snap snap-core snap-loader-static snap-server
      snaplet-postgresql-simple text time xmlhtml
@@ -127,6 +136,7 @@ rec {
   exceptions
   failure
   fast-logger
+  feed
   file-embed
   hamlet
   hashable
@@ -139,6 +149,7 @@ rec {
   hspec
   html
   http-conduit
+  iso8601-time
   list-tries
   mmorph
   monad-control
