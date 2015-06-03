@@ -18,7 +18,12 @@ rec {
           #ghc-events = pkgs.haskell.packages.ghc784.callPackage  ../src/../src/ghc-events-0.4.3.0  {};
           #ghc-events = pkgs.haskell.packages.ghc784.callPackage  ./haskell/ghc-events-0.4.3.0  {};
           lens = dontCheck super.lens;
+
+          #useless in the end, pb was not here
           #ghc-events = doJailbreak super.ghc-events;
+
+          #why this alone does not work for removing check ? 
+          snap-extras  = dontCheck super.snap-extras;
           };
       };
 
@@ -26,12 +31,16 @@ rec {
       overrides = self: super:  with pkgs.haskell-ng.lib; {
           ghc-events = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/ghc-events-0.4.3.0  {});
           lens =  dontCheck super.lens;
+
+          #I have to override it here..
+          snap-extras  = dontCheck super.snap-extras;
+          
           };
       };
       
 
     haskellngPackages  = myHaskellPackages super.haskellngPackages;
-    haskell784Packages = myHaskellPackages784(myHaskellPackages super.haskell-ng.packages.ghc784);
+    haskell784Packages = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784);
     haskell763Packages = myHaskellPackages super.haskell-ng.packages.ghc763;
 
     hs784  = haskell784Packages.ghcWithPackages (p: with p;
@@ -41,7 +50,7 @@ rec {
                   hlint
                   cabal2nix
                   aeson base bytestring heist lens MonadCatchIO-transformers mtl
-                  postgresql-simple snap snap-core snap-loader-static snap-server
+                  postgresql-simple snap snap-core snap-loader-static snap-server snap-extras
                   snaplet-postgresql-simple text time xmlhtml
                   codex
                   hobbes
@@ -63,7 +72,7 @@ rec {
                   hlint
                   cabal2nix
                   aeson base bytestring heist lens MonadCatchIO-transformers mtl
-                  postgresql-simple snap snap-core snap-loader-static snap-server
+                  postgresql-simple snap snap-core snap-loader-static snap-server snap-extras
                   snaplet-postgresql-simple text time xmlhtml
                   codex
                   hobbes
