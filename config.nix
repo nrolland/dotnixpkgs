@@ -37,13 +37,20 @@ rec {
           
           };
       };
-      
 
-    haskellngPackages  = myHaskellPackages super.haskellngPackages;
-    haskell784Packages = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784);
-    haskell763Packages = myHaskellPackages super.haskell-ng.packages.ghc763;
+    # haskell710Packages =                      myHaskellPackages super.haskell.packages.ghc7101;
+    # haskell784Packages = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
+    # haskell763Packages =                      myHaskellPackages super.haskell.packages.ghc763 ;
 
-    hs784  = haskell784Packages.ghcWithPackages (p: with p;
+    #I create another set instead with . so that I can call something.${argcompiler}.somethingelse
+    # as interpolation has to happen after a dot
+    myhaskell = { packages = {
+                     ghc784  = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
+                     ghc7101 =                      myHaskellPackages super.haskell.packages.ghc7101;
+                  };  }; 
+
+    # hs784  = haskell784Packages.ghcWithPackages (p: with p;
+    hs784  = myhaskell.packages.ghc784.ghcWithPackages (p: with p;
              [
                   ghc-mod 
                   hdevtools
@@ -65,7 +72,8 @@ rec {
             ]
             ++(myPackages p)
          );
-    hs7101 = haskellngPackages.ghcWithPackages (p: with p;
+    #hs7101 = haskell710Packages.ghcWithPackages (p: with p;
+    hs7101 = myhaskell.packages.ghc7101.ghcWithPackages (p: with p;
               [
                   #ghc-mod
                   hdevtools
@@ -88,7 +96,7 @@ rec {
             ++( myPackages7101  p) 
          );
 
-    hsEnvHoogle = withHoogle hs784;
+    #hsEnvHoogle = withHoogle hs784;
     hsEmpty = pkgs.haskell-ng.packages.ghc784.ghcWithPackages (p: with p; []);
 
     devWeb = let haskellngPackages = pkgs.haskellngPackages.override {
