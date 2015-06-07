@@ -41,8 +41,8 @@ rec {
 
 
     cabal-install = {
-      "1.20.0.6"  = self.callPackage (import cabal/1.20.0.6.nix) { ghc = hs784; };
-      "1.22.4.0"  = self.callPackage (import cabal/1.22.4.0.nix)  {ghc = hs7101;};
+      "1_20_0_6"  = self.callPackage (import cabal/1.20.0.6.nix) { ghc = hs784; };
+      "1_22_4_0"  = self.callPackage (import cabal/1.22.4.0.nix)  {ghc = hs7101;};
     };
     
     # haskell710Packages =                      myHaskellPackages super.haskell.packages.ghc7101;
