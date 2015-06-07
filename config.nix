@@ -12,7 +12,7 @@ rec {
           #mkDerivation = expr: super.mkDerivation (expr // {
           #  enableLibraryProfiling = true; });
           # Private package
-          system-fileio   = self.callPackage  ../clones/haskell-filesystem/system-fileio/default.nix {};
+          #system-fileio   = self.callPackage  ../clones/haskell-filesystem/system-fileio/default.nix {};
           cmdtheline = self.callPackage  ../hask/purescript-nix/cmdtheline.nix {};
           purescript = self.callPackage  ../hask/purescript-nix/purescript.nix {};
           #ghc-events = pkgs.haskell.packages.ghc784.callPackage  ../src/../src/ghc-events-0.4.3.0  {};
@@ -39,6 +39,12 @@ rec {
           };
       };
 
+
+    cabal-install = {
+      "1.20.0.6"  = self.callPackage (import cabal/1.20.0.6.nix) { ghc = hs784; };
+      "1.22.4.0"  = self.callPackage (import cabal/1.22.4.0.nix)  {ghc = hs7101;};
+    };
+    
     # haskell710Packages =                      myHaskellPackages super.haskell.packages.ghc7101;
     # haskell784Packages = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
     # haskell763Packages =                      myHaskellPackages super.haskell.packages.ghc763 ;
