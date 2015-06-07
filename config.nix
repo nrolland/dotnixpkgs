@@ -29,6 +29,7 @@ rec {
 
     myHaskellPackages784 = hp : hp.override {
       overrides = self: super:  with pkgs.haskell-ng.lib; {
+          #cd haskell && cabal get ghc-events-0.4.3.0 && cd ghc-events-0.4.3.0 && cabal2nix --no-check ghc-events.cabal >default.nix
           ghc-events = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/ghc-events-0.4.3.0  {});
           lens =  dontCheck super.lens;
 
@@ -96,7 +97,7 @@ rec {
             ++( myPackages7101  p) 
          );
 
-    #hsEnvHoogle = withHoogle hs784;
+    hsEnvHoogle = withHoogle hs784;
     hsEmpty = pkgs.haskell-ng.packages.ghc784.ghcWithPackages (p: with p; []);
 
     devWeb = let haskellngPackages = pkgs.haskellngPackages.override {
@@ -133,7 +134,7 @@ rec {
      import <nixpkgs/pkgs/development/libraries/haskell/hoogle/local.nix> {
       stdenv = pkgs.stdenv;
       inherit hoogle rehoo;
-      ghc = pkgs.haskell-ng.compiler.ghc;
+      ghc = pkgs.haskell.compiler.ghc784;
       packages = haskellEnv.paths;
       };
     #does not work openblas-0.2.14 : unsupported system: x86_64-darwin
