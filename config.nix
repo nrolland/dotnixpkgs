@@ -72,6 +72,8 @@ rec {
                   djinn #mueval
                   #idris
                   stylish-haskell
+                  sqlite-simple
+                  #haddock-api
                   threadscope
                   ghc-events
                   timeplot splot
@@ -92,6 +94,10 @@ rec {
                   codex
                   hobbes
                   hasktags
+                  sqlite-simple
+                  haddock-library
+                  haddock-api
+ 
                   #djinn mueval
                   #idris
                   #stylish-haskell
