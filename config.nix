@@ -349,6 +349,7 @@ rec {
   monad-logger
   mtl
   mvc
+  optparse-applicative
   pandoc
   parallel
   parsec
@@ -373,17 +374,20 @@ rec {
   scotty
   semigroupoids
   semigroups
+  servant
   shake
   shakespeare
   shelly
   speculation
   split
   spoon
+  sqlite-simple
   strict
   strptime
   syb
   system-fileio
   tagged
+  tagsoup
   tar
   tasty
   template-haskell
