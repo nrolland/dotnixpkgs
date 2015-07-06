@@ -4,6 +4,7 @@ rec {
   # using packageOverrides.
   packageOverrides = super : let self = super.pkgs; in rec {
 
+    #to override packages for every ghc version
     myHaskellPackages = hp : hp.override {
       overrides = self: super:  with pkgs.haskell-ng.lib; {
           # Enable profiling. Taken from
@@ -27,15 +28,18 @@ rec {
           };
       };
 
+    #to override packages only for 784
     myHaskellPackages784 = hp : hp.override {
       overrides = self: super:  with pkgs.haskell-ng.lib; {
-          #cd haskell && cabal get ghc-events-0.4.3.0 && cd ghc-events-0.4.3.0 && cabal2nix --no-check ghc-events.cabal >default.nix
+          # to retrieve the nix expression:
+          # cd haskell && cabal get ghc-events-0.4.3.0 && cd ghc-events-0.4.3.0
+          # && cabal2nix --no-check ghc-events.cabal >default.nix
+          # dontCheck can be specified here instead, cf combinators available
           ghc-events = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/ghc-events-0.4.3.0  {});
           lens =  dontCheck super.lens;
 
           #I have to override it here..
           snap-extras  = dontCheck super.snap-extras;
-          
           };
       };
 
@@ -44,25 +48,29 @@ rec {
       "1_20_0_6"  = self.callPackage (import cabal/1.20.0.6.nix) { ghc = hs784; };
       "1_22_4_0"  = self.callPackage (import cabal/1.22.4.0.nix)  {ghc = hs7101;};
     };
-    
-    # haskell710Packages =                      myHaskellPackages super.haskell.packages.ghc7101;
-    # haskell784Packages = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
+
+    # that can work, but I need to parameterize unsing string interpolation, cf below
+     haskell710Packages =                      myHaskellPackages super.haskell.packages.ghc7101;
+    haskell784Packages = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
     # haskell763Packages =                      myHaskellPackages super.haskell.packages.ghc763 ;
 
-    #I create another set instead with . so that I can call something.${argcompiler}.somethingelse
+    # I create another set instead with . so that I can call something.${argcompiler}.somethingelse
     # as interpolation has to happen after a dot
     myhaskell = { packages = {
                      ghc784  = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
                      ghc7101 =                      myHaskellPackages super.haskell.packages.ghc7101;
                   };  }; 
 
+    # wihtout interpolation it would be 
     # hs784  = haskell784Packages.ghcWithPackages (p: with p;
+    # i use instead
+    # this is an environment containing ghc784 and the corresponding packages
     hs784  = myhaskell.packages.ghc784.ghcWithPackages (p: with p;
              [
                   ghc-mod 
                   hdevtools
                   hlint
-                  cabal2nix
+                  #cabal2nix
                   aeson base bytestring heist lens MonadCatchIO-transformers mtl
                   postgresql-simple snap snap-core snap-loader-static snap-server snap-extras
                   snaplet-postgresql-simple text time xmlhtml
@@ -82,12 +90,18 @@ rec {
             ++(myPackages p)
          );
     #hs7101 = haskell710Packages.ghcWithPackages (p: with p;
+    hs71012 =  myhaskell.packages.ghc7101.ghcWithPackages (p: with p;
+                 [
+                 haddock-api
+                 #aeson
+                 ]
+                );
     hs7101 = myhaskell.packages.ghc7101.ghcWithPackages (p: with p;
               [
                   #ghc-mod
                   hdevtools
                   hlint
-                  cabal2nix
+                  #cabal2nix
                   aeson base bytestring heist lens MonadCatchIO-transformers mtl
                   postgresql-simple snap snap-core snap-loader-static snap-server snap-extras
                   snaplet-postgresql-simple text time xmlhtml
@@ -96,7 +110,7 @@ rec {
                   hasktags
                   sqlite-simple
                   haddock-library
-                  haddock-api
+                  #haddock-api
  
                   #djinn mueval
                   #idris
@@ -109,7 +123,9 @@ rec {
             ++( myPackages7101  p) 
          );
 
-    hsEnvHoogle = withHoogle hs784;
+    #this installs documentation
+    hsHoogle784 = withHoogle hs784;
+    
     hsEmpty = pkgs.haskell-ng.packages.ghc784.ghcWithPackages (p: with p; []);
 
     devWeb = let haskellngPackages = pkgs.haskellngPackages.override {
@@ -181,6 +197,7 @@ rec {
   async
   attempt
   attoparsec
+  atto-lisp
   bifunctors
   bytestring
   cassava
@@ -304,6 +321,8 @@ rec {
   async
   attempt
   attoparsec
+  atto-lisp
+  bifunctors
   bifunctors
   bytestring
   cassava

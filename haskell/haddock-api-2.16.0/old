@@ -1,0 +1,3 @@
+let pkg = import ./exp710.nix;
+in
+  pkg.env
