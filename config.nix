@@ -3,7 +3,15 @@ rec {
   # ~/.nixpkgs/config.nix lets us override the Nix package set
   # using packageOverrides.
   packageOverrides = super : let self = super.pkgs; in rec {
-
+    myEnv = pkgs.stdenv.mkDerivation {
+    name = "myEnv";
+    buildInputs = [
+      cabal-install."1_20_0_6"
+      pkgs.haskellPackages.cabal2nix
+      pkgs.wxGTK30
+    ];
+    };
+  
     #to override packages for every ghc version
     myHaskellPackages = hp : hp.override {
       overrides = self: super:  with pkgs.haskell-ng.lib; {
@@ -36,13 +44,18 @@ rec {
           # && cabal2nix --no-check ghc-events.cabal >default.nix
           # dontCheck can be specified here instead, cf combinators available
           ghc-events = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/ghc-events-0.4.3.0  {});
+          gloss      = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/gloss-1.8.2.1  {});
+          GLUT       = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/GLUT-2.5.1.1  {});
+          bmp       = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/bmp-1.2.5.2  {});
+          #OpenGL       = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/OpenGL-2.9.2.0  {});
           lens =  dontCheck super.lens;
 
           #I have to override it here..
           snap-extras  = dontCheck super.snap-extras;
           };
       };
-
+      
+    myHaskellPackages764 = myHaskellPackages784;
 
     cabal-install = {
       "1_20_0_6"  = self.callPackage (import cabal/1.20.0.6.nix) { ghc = hs784; };
@@ -50,13 +63,14 @@ rec {
     };
 
     # that can work, but I need to parameterize unsing string interpolation, cf below
-     haskell710Packages =                      myHaskellPackages super.haskell.packages.ghc7101;
+    haskell710Packages =                      myHaskellPackages super.haskell.packages.ghc7101;
     haskell784Packages = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
     # haskell763Packages =                      myHaskellPackages super.haskell.packages.ghc763 ;
 
     # I create another set instead with . so that I can call something.${argcompiler}.somethingelse
     # as interpolation has to happen after a dot
     myhaskell = { packages = {
+                     ghc763  = myHaskellPackages764(myHaskellPackages super.haskell.packages.ghc763 );
                      ghc784  = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
                      ghc7101 =                      myHaskellPackages super.haskell.packages.ghc7101;
                   };  }; 
@@ -67,14 +81,23 @@ rec {
     # this is an environment containing ghc784 and the corresponding packages
     hs784  = myhaskell.packages.ghc784.ghcWithPackages (p: with p;
              [
-                  ghc-mod 
+                  ghc-mod
                   hdevtools
                   hlint
                   #cabal2nix
+                  flow
+                  #GLUT
+                  #OpenGL
+                  #gloss
+                  #category-extras
+                  blaze-svg
                   aeson base bytestring heist lens MonadCatchIO-transformers mtl
                   postgresql-simple snap snap-core snap-loader-static snap-server snap-extras
                   snaplet-postgresql-simple text time xmlhtml
+                  safecopy snap-blaze snaplet-acid-state
                   codex
+                  random
+                  directory
                   hobbes
                   hasktags
                   djinn #mueval
@@ -86,9 +109,46 @@ rec {
                   ghc-events
                   timeplot splot
                   hakyll
+                  QuickCheck 
+            ]
+            #++(myPackages p)
+         );
+   hs763  = myhaskell.packages.ghc763.ghcWithPackages (p: with p;
+             [
+                  ghc-mod
+                  #agda
+                  hdevtools
+                  category-extras
+                  hlint
+                  #cabal2nix
+                  flow
+                  #GLUT
+                  #OpenGL
+                  blaze-svg
+                  aeson base bytestring heist lens MonadCatchIO-transformers mtl
+                  postgresql-simple snap snap-core snap-loader-static snap-server snap-extras
+                  snaplet-postgresql-simple text time xmlhtml
+                  codex
+                  random
+                                    OpenGL
+                  gloss
+                  directory
+                  hobbes
+                  hasktags
+                  djinn #mueval
+                  #idris
+                  stylish-haskell
+                  sqlite-simple
+                  #haddock-api
+                  threadscope
+                  ghc-events
+                  timeplot splot
+                  hakyll
+                  QuickCheck 
             ]
             ++(myPackages p)
          );
+         
     #hs7101 = haskell710Packages.ghcWithPackages (p: with p;
     hs71012 =  myhaskell.packages.ghc7101.ghcWithPackages (p: with p;
                  [
@@ -101,6 +161,18 @@ rec {
                   #ghc-mod
                   hdevtools
                   hlint
+                  flow
+                  category-extras
+                  directory
+                  random
+                  gloss
+                  blaze-svg
+                  GLFW-b
+                  gloss-algorithms
+                  gloss-raster
+                  repa
+                  repa-algorithms
+                  repa-io 
                   #cabal2nix
                   aeson base bytestring heist lens MonadCatchIO-transformers mtl
                   postgresql-simple snap snap-core snap-loader-static snap-server snap-extras
@@ -152,8 +224,8 @@ rec {
     agdaEnv = pkgs.myEnvFun {
             name =  "agda";
             buildInputs = [
-            pkgs.haskellngPackages.Agda
-            pkgs.AgdaStdlib
+            pkgs.haskell.packages.ghc784.Agda
+            #pkgs.AgdaStdlib
             #haskellPackages.AgdaPrelude
             ];
     };
