@@ -111,7 +111,7 @@ rec {
                   hakyll
                   QuickCheck 
             ]
-            #++(myPackages p)
+            ++(myPackages p)
          );
    hs763  = myhaskell.packages.ghc763.ghcWithPackages (p: with p;
              [
