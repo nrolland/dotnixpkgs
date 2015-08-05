@@ -27,6 +27,7 @@ rec {
           #ghc-events = pkgs.haskell.packages.ghc784.callPackage  ../src/../src/ghc-events-0.4.3.0  {};
           #ghc-events = pkgs.haskell.packages.ghc784.callPackage  ./haskell/ghc-events-0.4.3.0  {};
           lens = dontCheck super.lens;
+          mockery = dontCheck super.mockery;
 
           #useless in the end, pb was not here
           #ghc-events = doJailbreak super.ghc-events;
@@ -44,11 +45,14 @@ rec {
           # && cabal2nix --no-check ghc-events.cabal >default.nix
           # dontCheck can be specified here instead, cf combinators available
           ghc-events = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/ghc-events-0.4.3.0  {});
-          gloss      = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/gloss-1.8.2.1  {});
-          GLUT       = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/GLUT-2.5.1.1  {});
-          bmp       = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/bmp-1.2.5.2  {});
+          #gloss      = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/gloss-1.8.2.1  {});
+          #GLUT       = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/GLUT-2.5.1.1  {});
+          #bmp       = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/bmp-1.2.5.2  {});
           #OpenGL       = dontCheck (pkgs.haskell.packages.ghc784.callPackage  ./haskell/OpenGL-2.9.2.0  {});
           lens =  dontCheck super.lens;
+          mockery = dontCheck super.mockery;
+          http-reverse-proxy = dontCheck super.http-reverse-proxy;
+          #authenticate = dontCheck authenticate;
 
           #I have to override it here..
           snap-extras  = dontCheck super.snap-extras;
@@ -81,43 +85,15 @@ rec {
     # this is an environment containing ghc784 and the corresponding packages
     hs784  = myhaskell.packages.ghc784.ghcWithPackages (p: with p;
              [
-                  ghc-mod
-                  hdevtools
-                  hlint
-                  #cabal2nix
-                  flow
-                  #GLUT
-                  #OpenGL
-                  #gloss
-                  #category-extras
-                  blaze-svg
-                  aeson base bytestring heist lens MonadCatchIO-transformers mtl
-                  postgresql-simple snap snap-core snap-loader-static snap-server snap-extras
-                  snaplet-postgresql-simple text time xmlhtml
-                  safecopy snap-blaze snaplet-acid-state
-                  codex
-                  random
-                  directory
-                  hobbes
-                  hasktags
-                  djinn #mueval
-                  #idris
-                  stylish-haskell
-                  sqlite-simple
-                  #haddock-api
-                  threadscope
-                  ghc-events
-                  timeplot splot
-                  hakyll
-                  QuickCheck 
+             process
             ]
-            ++(myPackages p)
+            ++(myPackages784 p)
          );
    hs763  = myhaskell.packages.ghc763.ghcWithPackages (p: with p;
              [
                   ghc-mod
                   #agda
-                  hdevtools
+                  #hdevtools
                   category-extras
                   hlint
                   #cabal2nix
@@ -146,7 +122,7 @@ rec {
                   hakyll
                   QuickCheck 
             ]
-            ++(myPackages p)
+            ++(myPackages784 p)
          );
          
     #hs7101 = haskell710Packages.ghcWithPackages (p: with p;
@@ -159,31 +135,6 @@ rec {
     hs7101 = myhaskell.packages.ghc7101.ghcWithPackages (p: with p;
               [
                   #ghc-mod
-                  hdevtools
-                  hlint
-                  flow
-                  category-extras
-                  directory
-                  random
-                  gloss
-                  blaze-svg
-                  GLFW-b
-                  gloss-algorithms
-                  gloss-raster
-                  repa
-                  repa-algorithms
-                  repa-io 
-                  #cabal2nix
-                  aeson base bytestring heist lens MonadCatchIO-transformers mtl
-                  postgresql-simple snap snap-core snap-loader-static snap-server snap-extras
-                  snaplet-postgresql-simple text time xmlhtml
-                  codex
-                  hobbes
-                  hasktags
-                  sqlite-simple
-                  haddock-library
-                  #haddock-api
- 
                   #djinn mueval
                   #idris
                   #stylish-haskell
@@ -249,8 +200,14 @@ rec {
 
 
   myPackages7101 = p: with p; [
-     #classy-prelude-yesod
+    #cabal2nix
+  #category-extras
+  #ghcjs-dom
+  #reflex
+  #reflex-dom
+  #reflex-todomvc
   #stm
+  #timeparsers
   #wai-loggerm
   #yesod
   #yesod-auth
@@ -258,29 +215,37 @@ rec {
   #yesod-core
   #yesod-for
   #yesod-static
+  GLFW-b
   HUnit
   IfElse
   MemoTrie
   MissingH
+  MonadCatchIO-transformers
   QuickCheck 
   accelerate
   adjunctions
   aeson
+  aeson
   async
   attempt
-  attoparsec
   atto-lisp
+  attoparsec
+  base
   bifunctors
+  blaze-svg
+  bytestring
   bytestring
   cassava
   classy-prelude
   classy-prelude-conduit
   clay 
   clay 
+  codex
   conduit
   containers
   data-default
   derive
+  directory
   directory
   distributive
   dlist
@@ -293,13 +258,23 @@ rec {
   fast-logger
   feed
   file-embed
-  #ghcjs-dom
+  flow
+  gloss
+  gloss-algorithms
+  gloss-raster
+  haddock-api
+  haddock-library
   hamlet
   hashable
   hashtables
   haskeline
+  hasktags
+  hdevtools
+  heist
   hfsevents
   hjsmin
+  hlint
+  hobbes
   hoopl
   hslogger
   hspec
@@ -308,11 +283,13 @@ rec {
   iso8601-time
   lens
   lens
+  lens
   list-tries
   lucid
   mmorph
   monad-control
   monad-logger
+  mtl
   mtl
   mvc
   pandoc
@@ -324,13 +301,15 @@ rec {
   pipes
   pipes-concurrency
   pointed
+  postgresql-simple
   profunctors
+  random
   random
   reducers
   reflection
-  #reflex
-  #reflex-dom
-  #reflex-todomvc
+  repa
+  repa-algorithms
+  repa-io 
   resourcet
   retry
   rex
@@ -342,9 +321,16 @@ rec {
   shake
   shakespeare
   shelly
+  snap
+  snap-core
+  snap-extras
+  snap-loader-static
+  snap-server
+  snaplet-postgresql-simple
   speculation
   split
   spoon
+  sqlite-simple
   strict
   strptime
   syb
@@ -354,10 +340,11 @@ rec {
   tasty
   template-haskell
   text
+  text
   text         
   text           
   time
-  #timeparsers
+  time
   transformers
   unordered-containers
   vector
@@ -366,48 +353,61 @@ rec {
   wai-extra
   warp
   xhtml
+  xmlhtml
   yaml
   zippers
   zlib
-
+ #classy-prelude-yesod
   ];
   
-  myPackages = p: with p; [
-    #classy-prelude-yesod
-  stm
+  myPackages784 = p: with p; [
+   #OpenGL
+  #cabal2nix
+  #category-extras
+  #classy-prelude-yesod
+  #ghcjs-dom
+  #gloss
+  #haddock-api
+  #idris
+  #reflex
+  #reflex-dom
+  #reflex-todomvc
   #wai-loggerm
-  yesod
-  yesod-auth
-  yesod-bin
-  yesod-core
   #yesod-for
-  yesod-static
   HUnit
-  IfElse
+  #IfElse
   MemoTrie
   MissingH
+  MonadCatchIO-transformers
+  QuickCheck 
   QuickCheck 
   accelerate
   adjunctions
   aeson
+  aeson
   async
   attempt
-  attoparsec
   atto-lisp
+  attoparsec
+  base
   bifunctors
   bifunctors
+  blaze-svg
+  bytestring
   bytestring
   cassava
   classy-prelude
   classy-prelude-conduit
   clay 
   clay 
+  codex
   conduit
   containers
   data-default
   derive
   directory
   distributive
+  #djinn #mueval
   dlist
   dns
   doctest
@@ -418,20 +418,27 @@ rec {
   fast-logger
   feed
   file-embed
-  #ghcjs-dom
+  flow
+  ghc-events
+  ghc-mod
+  #hakyll
   hamlet
-  hashable
+  #hashable
   hashtables
   haskeline
+  hasktags
+  #hdevtools
+  heist
   hfsevents
   hjsmin
+  hlint
+  hobbes
   hoopl
   hslogger
   hspec
   html
   http-conduit
   iso8601-time
-  lens
   lens
   list-tries
   lucid
@@ -450,17 +457,17 @@ rec {
   pipes
   pipes-concurrency
   pointed
+  postgresql-simple
   profunctors
+  random
   random
   reducers
   reflection
-  #reflex
-  #reflex-dom
-  #reflex-todomvc
   resourcet
   retry
   rex
   safe
+  safecopy
   sbv
   scotty
   semigroupoids
@@ -469,12 +476,17 @@ rec {
   shake
   shakespeare
   shelly
+  snap snap-core snap-loader-static snap-server snap-extras snap-blaze snaplet-acid-state
+  snaplet-postgresql-simple text time xmlhtml
   speculation
   split
   spoon
   sqlite-simple
+  sqlite-simple
+  stm
   strict
   strptime
+  stylish-haskell
   syb
   system-fileio
   tagged
@@ -485,8 +497,10 @@ rec {
   text
   text         
   text           
+  threadscope
   time
   timeparsers
+  #timeplot #splot
   transformers
   unordered-containers
   vector
@@ -496,10 +510,15 @@ rec {
   warp
   xhtml
   yaml
+  yesod
+  yesod-auth
+  yesod-bin
+  yesod-core
+  yesod-static
   zippers
+ # z3
   zlib
-# z3
-#cabal-install
+  #GLUT
   ];
 
   allowBroken = true;
