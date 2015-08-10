@@ -232,6 +232,7 @@ rec {
   attoparsec
   base
   bifunctors
+  binary-conduit
   blaze-svg
   bytestring
   bytestring
@@ -242,6 +243,7 @@ rec {
   clay 
   codex
   conduit
+  conduit-combinators
   containers
   data-default
   derive
@@ -292,6 +294,7 @@ rec {
   mtl
   mtl
   mvc
+  network-conduit
   pandoc
   parallel
   parsec
@@ -392,6 +395,7 @@ rec {
   base
   bifunctors
   bifunctors
+  binary-conduit
   blaze-svg
   bytestring
   bytestring
@@ -402,6 +406,7 @@ rec {
   clay 
   codex
   conduit
+  conduit-combinators
   containers
   data-default
   derive
@@ -447,6 +452,7 @@ rec {
   monad-logger
   mtl
   mvc
+  network-conduit
   optparse-applicative
   pandoc
   parallel
