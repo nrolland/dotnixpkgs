@@ -448,7 +448,6 @@ rec {
   html
   http-conduit
   iso8601-time
-  lambdabot
   lens
   list-tries
   lucid
