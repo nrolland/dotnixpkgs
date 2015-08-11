@@ -52,6 +52,7 @@ rec {
           lens =  dontCheck super.lens;
           mockery = dontCheck super.mockery;
           http-reverse-proxy = dontCheck super.http-reverse-proxy;
+          goa = dontHaddock super.goa;
           #authenticate = dontCheck authenticate;
 
           #I have to override it here..
@@ -264,6 +265,7 @@ rec {
   gloss
   gloss-algorithms
   gloss-raster
+  goa
   haddock-api
   haddock-library
   hamlet
@@ -283,6 +285,7 @@ rec {
   html
   http-conduit
   iso8601-time
+  lambdabot
   lens
   lens
   lens
@@ -426,6 +429,7 @@ rec {
   flow
   ghc-events
   ghc-mod
+  goa
   #hakyll
   hamlet
   #hashable
@@ -444,6 +448,7 @@ rec {
   html
   http-conduit
   iso8601-time
+  lambdabot
   lens
   list-tries
   lucid
