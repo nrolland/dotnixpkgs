@@ -28,12 +28,19 @@ rec {
           #ghc-events = pkgs.haskell.packages.ghc784.callPackage  ./haskell/ghc-events-0.4.3.0  {};
           lens = dontCheck super.lens;
           mockery = dontCheck super.mockery;
+          http-reverse-proxy = dontCheck super.http-reverse-proxy;
+          goa = dontHaddock super.goa;
+          #authenticate = dontCheck authenticate;
+
 
           #useless in the end, pb was not here
           #ghc-events = doJailbreak super.ghc-events;
 
           #why this alone does not work for removing check ? 
           snap-extras  = dontCheck super.snap-extras;
+
+          ghc-mod = dontCheck (self.callPackage ./haskell/ghc-mod-5.3.0.0 {});
+          cabal-helper = self.callPackage ./haskell/cabal-helper-0.5.1.0 {};
           };
       };
 
@@ -231,6 +238,7 @@ rec {
   attempt
   atto-lisp
   attoparsec
+  attoparsec-conduit
   base
   bifunctors
   binary-conduit
@@ -238,6 +246,7 @@ rec {
   bytestring
   bytestring
   cassava
+  charset
   classy-prelude
   classy-prelude-conduit
   clay 
@@ -262,6 +271,7 @@ rec {
   feed
   file-embed
   flow
+  #ghc-mod
   gloss
   gloss-algorithms
   gloss-raster
@@ -275,6 +285,7 @@ rec {
   hasktags
   hdevtools
   heist
+  hi
   hfsevents
   hjsmin
   hlint
@@ -289,6 +300,7 @@ rec {
   lens
   lens
   lens
+  lens-aeson
   list-tries
   lucid
   mmorph
@@ -324,6 +336,11 @@ rec {
   scotty
   semigroupoids
   semigroups
+  servant
+  servant-docs   
+  servant-lucid  
+  servant-server
+  servant-jquery
   shake
   shakespeare
   shelly
@@ -395,6 +412,7 @@ rec {
   attempt
   atto-lisp
   attoparsec
+  attoparsec-conduit
   base
   bifunctors
   bifunctors
@@ -403,6 +421,7 @@ rec {
   bytestring
   bytestring
   cassava
+  charset
   classy-prelude
   classy-prelude-conduit
   clay 
@@ -439,6 +458,7 @@ rec {
   #hdevtools
   heist
   hfsevents
+  hi
   hjsmin
   hlint
   hobbes
@@ -447,8 +467,9 @@ rec {
   hspec
   html
   http-conduit
-  iso8601-time
+  iso8601-time  
   lens
+  lens-aeson
   list-tries
   lucid
   mmorph
@@ -483,6 +504,10 @@ rec {
   semigroupoids
   semigroups
   servant
+  servant-docs   
+  servant-lucid  
+  servant-server
+  servant-jquery
   shake
   shakespeare
   shelly
