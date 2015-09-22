@@ -75,7 +75,7 @@ rec {
     };
 
     # that can work, but I need to parameterize unsing string interpolation, cf below
-    haskell710Packages =                      myHaskellPackages super.haskell.packages.ghc7101;
+    haskell710Packages =                      myHaskellPackages super.haskell.packages.ghc7102;
     haskell784Packages = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
     # haskell763Packages =                      myHaskellPackages super.haskell.packages.ghc763 ;
 
@@ -84,7 +84,7 @@ rec {
     myhaskell = { packages = {
                      ghc763  = myHaskellPackages764(myHaskellPackages super.haskell.packages.ghc763 );
                      ghc784  = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
-                     ghc7101 =                      myHaskellPackages super.haskell.packages.ghc7101;
+                     ghc7101 =                      myHaskellPackages super.haskell.packages.ghc7102;
                   };  }; 
 
    stackLTS35 = super.haskell.packages.lts-3_5.ghcWithPackages(p: with p; [ghc-mod ]);
