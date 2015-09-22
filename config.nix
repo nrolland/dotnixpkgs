@@ -87,11 +87,13 @@ rec {
                      ghc7101 =                      myHaskellPackages super.haskell.packages.ghc7101;
                   };  }; 
 
-    # wihtout interpolation it would be 
-    # hs784  = haskell784Packages.ghcWithPackages (p: with p;
-    # i use instead
-    # this is an environment containing ghc784 and the corresponding packages
-    hs784  = myhaskell.packages.ghc784.ghcWithPackages (p: with p;
+   stackLTS35 = super.haskell.packages.lts-3_5.ghcWithPackages(p: with p; [ghc-mod ]);
+                  
+   # wihtout interpolation it would be 
+   # hs784  = haskell784Packages.ghcWithPackages (p: with p;
+   # i use instead
+   # this is an environment containing ghc784 and the corresponding packages
+   hs784  = myhaskell.packages.ghc784.ghcWithPackages (p: with p;
              [
              process
             ]
