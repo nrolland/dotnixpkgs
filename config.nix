@@ -1,6 +1,6 @@
 {pkgs}:
 rec {
-  # ~/.nixpkgs/config.nix lets us override the Nix package set
+  # ~/.nixpkgs/cbonfig.nix lets us override the Nix package set
   # using packageOverrides.
   packageOverrides = super : let self = super.pkgs; in rec {
     myEnv = pkgs.stdenv.mkDerivation {
@@ -31,7 +31,8 @@ rec {
           http-reverse-proxy = dontCheck super.http-reverse-proxy;
           goa = dontHaddock super.goa;
           #authenticate = dontCheck authenticate;
-
+          servant-client = dontCheck super.servant-client;
+          pandoc-citeproc =  dontCheck super.pandoc-citeproc;
 
           #useless in the end, pb was not here
           #ghc-events = doJailbreak super.ghc-events;
@@ -82,12 +83,13 @@ rec {
     # I create another set instead with . so that I can call something.${argcompiler}.somethingelse
     # as interpolation has to happen after a dot
     myhaskell = { packages = {
-                     ghc763  = myHaskellPackages764(myHaskellPackages super.haskell.packages.ghc763 );
                      ghc784  = myHaskellPackages784(myHaskellPackages super.haskell.packages.ghc784 );
                      ghc7101 =                      myHaskellPackages super.haskell.packages.ghc7102;
+                     lts-3_6 =                      myHaskellPackages super.haskell.packages.lts-3_6;
                   };  }; 
 
-   stackLTS35 = super.haskell.packages.lts-3_5.ghcWithPackages(p: with p; [ghc-mod ]);
+   stackLTS36        = myhaskell.packages.lts-3_6.ghcWithPackages(import ./lts36packages.nix);
+   stackLTS36limited = myhaskell.packages.lts-3_6.ghcWithPackages(import ./lts36packageslimited.nix);
                   
    # wihtout interpolation it would be 
    # hs784  = haskell784Packages.ghcWithPackages (p: with p;
@@ -99,42 +101,8 @@ rec {
             ]
             ++(myPackages784 p)
          );
-   hs763  = myhaskell.packages.ghc763.ghcWithPackages (p: with p;
-             [
-                  ghc-mod
-                  #agda
-                  #hdevtools
-                  category-extras
-                  hlint
-                  #cabal2nix
-                  flow
-                  #GLUT
-                  #OpenGL
-                  blaze-svg
-                  aeson base bytestring heist lens MonadCatchIO-transformers mtl
-                  postgresql-simple snap snap-core snap-loader-static snap-server snap-extras
-                  snaplet-postgresql-simple text time xmlhtml
-                  codex
-                  random
-                                    OpenGL
-                  gloss
-                  directory
-                  hobbes
-                  hasktags
-                  djinn #mueval
-                  #idris
-                  stylish-haskell
-                  sqlite-simple
-                  #haddock-api
-                  threadscope
-                  ghc-events
-                  timeplot splot
-                  hakyll
-                  QuickCheck 
-            ]
-            ++(myPackages784 p)
-         );
-         
+
+
     #hs7101 = haskell710Packages.ghcWithPackages (p: with p;
     hs71012 =  myhaskell.packages.ghc7101.ghcWithPackages (p: with p;
                  [
@@ -562,3 +530,5 @@ rec {
   allowUnfree = true;
 
 }
+
+
